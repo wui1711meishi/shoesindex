@@ -60,18 +60,18 @@
                 <span class="etxt">ORDERSIXW</span>
             </div>
             <ul class="orderlist">
-                <li>
-                    <img style="width:116px;height:101px" class="thumb" :src="product.img" alt="">
+                <li v-for="(item,ind) in hrr">
+                    <img style="width:116px;height:101px" class="thumb" :src="olol[ind]" alt="">
                     <div class="proinfo">
                         <span class="ename">THE BIG</span>
                         <span class="ename2">BANG SHOW</span>
-                        <div class="name">{{product.name}}</div>
-                        <div class="procolor">{{product.color}}</div>
-                        <div class="cm">{{product.size}}</div>
+                        <div class="name">{{item.name}}</div>
+                        <div class="procolor">{{item.color}}</div>
+                        <div class="cm">{{item.size}}码</div>
                     </div>
-                    <div class="price">{{product.price}}元</div>
-                    <div class="num">{{product.num}}</div>
-                    <div class="allprice">{{product.price*product.num}}元</div>
+                    <div class="price">{{item.price}}元</div>
+                    <div class="num">{{item.count}}</div>
+                    <div class="allprice">{{item.price*item.count}}元</div>
                 </li>
             </ul>
         </div>
@@ -202,6 +202,7 @@
                 product:'',
                 imgurl:'',
                 number:2,
+                lll:123,
                 addarr:[
                     "北京市  朝阳区    三里屯SOHO大厦A栋1002室     020004    李氏    151-3562-1434",
                     "太原市  朝阳区    凯通大厦A栋1002室     020004    李氏    151-3562-1434",
@@ -213,13 +214,17 @@
                     spaceBetween: 30,
                     freeMode: true
                 },
+                sbuy:{},
+                hrr:[],
+                gwcarr:[],
+                gobj:{},
+                zsarr:[],
+                zarr:[],
+                olol:[]
             }
         },
         mounted(){
-//            相关推荐的数据
-            this.$http.get('/api/product').then(res=>{
-                this.arr=res.body;
-            })
+
         },
         methods:{
             toto(){
@@ -234,20 +239,34 @@
             }
         },
         created(){
-            this.id=this.$route.params.id;
-            let id=this.id;
-            let index=0;
-            this.$http.get('/api/product/car').then(res=>{
-                res.body.forEach((val,ind)=>{
-
-                    if(val.sid==id){
-
-                        index=ind;
-                    };
+            this.sbuy.user=sessionStorage.user;
+            this.$http.post('/api/product/getcarle',this.sbuy,{headers:"application/x-www-form-urlencoded"}).then(res=>{
+                this.hrr=res.body;
+                this.hrr.forEach((val,ind)=>{
+                    val.img.split('--').forEach((val,ind)=>{
+                        JSON.parse(val)
+                        if(ind==0){
+                            this.olol.push(JSON.parse(val).url)
+                        }
+                    })
                 })
-                this.product=res.body[index];
+//                console.log(1)
+//                this.hrr=res.body;
+//                this.hrr.forEach((val,ind)=>{
+//                    this.gwcarr.push(val.sid)
+//                })
+//                let gobj={ssid:this.gwcarr}
+//                console.log(gobj)
+//                this.$http.post('/api/product/ikm',gobj,{headers:"application/x-www-form-urlencoded"}).then(res=>{
+//                    console.log(2)
+//                    this.zsarr=res.body;
+//                    console.log(this.zsarr)
+//                    this.zsarr[0].img.split('--').forEach((val,ind)=>{
+//                        JSON.parse(val)
+//                        this.zarr.push(JSON.parse(val).url)
+//                    })
+//                })
             })
-
         }
     }
 </script>

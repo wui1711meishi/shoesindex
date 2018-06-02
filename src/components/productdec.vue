@@ -67,12 +67,12 @@
                 <div class="chx"></div>
                 <div class="but">
                     <!--立即购买-->
-                    <div to="" @click="buynow">
+                    <div @click="buynow">
                         <img src="../assets/img/zxcv.png" alt="">
                         <span v-if="flag1">请先登录</span>
                     </div>
                     <!--加入购物车-->
-                    <div to="" @click="addcar()">
+                    <div @click="addcar()">
                         <img src="../assets/img/vcxz.png" alt="">
                         <span v-if="flag2">请先登录</span>
                     </div>
@@ -178,12 +178,28 @@
                 },
                 shoesId:0,
                 flag1: false,
-                flag2: false
+                flag2: false,
+                kg:''
             }
         },
         methods:{
+
             buynow(){
                 if (sessionStorage.user) {
+                    this.addobj.id=this.shoesId;
+                    this.addobj.size=this.sizes[this.sizenub].size;
+                    this.addobj.color=this.colors[this.colornub].color;
+                    this.addobj.num=this.num;
+                    this.addobj.user=sessionStorage.user;
+                    this.$http.post('/api/product/addcar',this.addobj,{headers:"application/x-www-form-urlencoded"}).then(res=>{
+
+                        if(res.body=='ok'){
+                            console.log('添加成功')
+                            this.$router.push('writeorder')
+                        }else{
+                            console.log('添加失败')
+                        }
+                    })
 
                 }
                 else {
@@ -271,7 +287,7 @@
           }
         },
         created(){
-
+            this.kg=sessionStorage.user
         }
     }
 </script>
