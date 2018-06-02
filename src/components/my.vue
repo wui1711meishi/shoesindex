@@ -23,14 +23,14 @@
                 </div>
                 <div class="list">
                     <ul>
-                        <li v-for="(item,ind) in arr">
+                        <li v-for="(item,ind) in hrr">
                             <div class="time">2018-5-27 09:30:10</div>
                             <router-link to="">
                                 <ul>
                                     <li>
                                         <div class="first">
                                             <div class="listimg">
-                                                <img :src="item.img" alt="">
+                                                <img :src="olol[ind]" alt="">
                                             </div>
                                             <h1><span>THE BIG</span> SHOW</h1>
                                             <h2>{{item.name}}</h2>
@@ -41,11 +41,11 @@
                                         </div>
                                     </li>
                                     <li>{{item.price}}</li>
-                                    <li>{{item.num}}</li>
-                                    <li>{{item.price*item.num}}</li>
+                                    <li>{{item.count}}</li>
+                                    <li>{{item.price*item.count}}</li>
                                     <li>已发货</li>
                                     <li>
-                                        <div class="last" @click="del(item.id)">
+                                        <div class="last">
                                             确认收货
                                         </div>
                                     </li>
@@ -67,27 +67,30 @@
             return {
                 arr:[],
                 frr:[],
+                hrr:[],
+                olol:[],
             }
         },
         created(){
-            this.$http.get('/api/product/my').then(res=>{
-                this.arr=res.body;
+            let obj={user:sessionStorage.user}
+            this.$http.post('/api/product/my',obj,{headers:"application/x-www-form-urlencoded"}).then(res=>{
+                this.hrr = res.body;
+                this.hrr.forEach((val, ind) => {
+                    val.img.split('--').forEach((val, ind) => {
+                        JSON.parse(val)
+                        if (ind == 0) {
+                            this.olol.push(JSON.parse(val).url)
+                        }
+                    })
+                })
             })
 
         },
         mounted(){
-//            相关推荐的数据
-            this.$http.get('/api/product').then(res=>{
-                this.frr=res.body;
-            })
+
         },
         methods:{
-            del(id){
-                this.$http.get('/api/product/del?id='+id).then(res=>{
 
-                })
-                location.reload();
-            }
         }
 
     }

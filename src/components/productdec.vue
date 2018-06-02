@@ -217,6 +217,7 @@
 
                         if(res.body=='ok'){
                             console.log('添加成功')
+                            this.$router.push({name:'my'})
                         }else{
                             console.log('添加失败')
                         }

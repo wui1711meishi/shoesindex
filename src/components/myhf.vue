@@ -7,8 +7,8 @@
                         <div class="lbimg">
                             <img src="../assets/img/EWGd.png" alt="">
                         </div>
-                        <router-link to="/login">登录</router-link>
-                        <router-link to="">注册</router-link>
+                        <router-link v-if="flagss" to="/login">登录</router-link>
+                        <router-link v-else to="" >{{user}}</router-link>
                     </div>
                     <div class="lb-r">
                         <router-link to="" class="lbr-e">
@@ -80,6 +80,8 @@
                     {to:'',left:'',name:'私人订制'},
                     {to:'',left:'',name:'品牌介绍'},
                 ],
+                flagss:true,
+                user:""
             }
         },
         mounted(){
@@ -87,6 +89,15 @@
                 val.left=this.$refs[ind][0].offsetLeft
             })
         },
+        created(){
+
+            if(sessionStorage.user){
+                this.user=sessionStorage.user;
+                this.flagss=false;
+            }else{
+                this.flagss=true;
+            }
+        }
     }
 </script>
 <style scoped lang='scss'>

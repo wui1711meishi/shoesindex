@@ -45,7 +45,7 @@
                 <ul>
                     <li v-for="(item,ind) in addarr">
                         <input type="radio" checked name="oo" @click="number=ind">
-                        <span>{{item}}</span>
+                        <span :ref="item">{{item}}</span>
                     </li>
 
                 </ul>
@@ -71,7 +71,7 @@
                     </div>
                     <div class="price">{{item.price}}元</div>
                     <div class="num">{{item.count}}</div>
-                    <div class="allprice">{{item.price*item.count}}元</div>
+                    <div class="allprice">{{item.price * item.count}}元</div>
                 </li>
             </ul>
         </div>
@@ -139,10 +139,12 @@
         </div>
         <div class="pay">
             <div class="sett">
-                <div class="payable"><span class="txt">应付款 </span><span>10232.00</span></div>
-                <div class="pealpayment"><span class="txt">实付款 </span><span>8976.00</span><div class="rmb">RMB</div></div>
+                <div class="payable"><span class="txt">应付款 </span><span>{{total}}</span></div>
+                <div class="pealpayment"><span class="txt">实付款 </span><span>{{total}}</span>
+                    <div class="rmb">RMB</div>
+                </div>
             </div>
-            <button @click="toto" type="submit" class="go">
+            <button @click="toto" class="go">
                 <img src="../assets/img/hgjghjgjj.png" alt="">
             </button>
         </div>
@@ -197,59 +199,74 @@
         name: 'writeorder',
         data(){
             return {
-                id:0,
-                ordernumber:1,
-                product:'',
-                imgurl:'',
-                number:2,
-                lll:123,
-                addarr:[
+                id: 0,
+                ordernumber: 1,
+                product: '',
+                imgurl: '',
+                number: 2,
+                lll: 123,
+                allprice:0,
+                addarr: [
                     "北京市  朝阳区    三里屯SOHO大厦A栋1002室     020004    李氏    151-3562-1434",
                     "太原市  朝阳区    凯通大厦A栋1002室     020004    李氏    151-3562-1434",
                     "上海市  浦东区    金融中心大厦A栋1002室     020004    赵氏    151-3562-5443",
                 ],
-                arr:[],
+                arr: [],
                 swiperOption2: {
                     slidesPerView: 4,
                     spaceBetween: 30,
                     freeMode: true
                 },
-                sbuy:{},
-                hrr:[],
-                gwcarr:[],
-                gobj:{},
-                zsarr:[],
-                zarr:[],
-                olol:[]
+                sbuy: {},
+                hrr: [],
+                gwcarr: [],
+                gobj: {},
+                zsarr: [],
+                zarr: [],
+                olol: []
             }
         },
-        mounted(){
-
-        },
-        methods:{
-            toto(){
-                this.id=this.$route.params.id;
-                let id=this.id;
-                let obj={add:this.addarr[this.number],sid:id};
-                this.$http.post('/api/product/adar',obj,{headers:"application/x-www-form-urlencoded"}).then(res=>{
-                    this.ordernumber=res.body[0].ordernumber;
-                    this.$router.push({name:'ordergive',params:{on:this.ordernumber}})
-                })
-
+        computed: {
+            total(){
+                let total=0;
+                this.hrr.forEach((item,ind)=>{
+                    total+=item.price*item.count;
+                });
+                this.allprice=total;
+                return total;
             }
-        },
-        created(){
-            this.sbuy.user=sessionStorage.user;
-            this.$http.post('/api/product/getcarle',this.sbuy,{headers:"application/x-www-form-urlencoded"}).then(res=>{
-                this.hrr=res.body;
-                this.hrr.forEach((val,ind)=>{
-                    val.img.split('--').forEach((val,ind)=>{
-                        JSON.parse(val)
-                        if(ind==0){
-                            this.olol.push(JSON.parse(val).url)
-                        }
-                    })
+    }
+    ,
+    methods:{
+        toto()
+        {
+            let user = sessionStorage.user;
+            let ad = this.addarr[this.number];
+            let obj = {user: user, address: ad};
+            this.$http.post('/api/product/ordernub', obj, {headers: "application/x-www-form-urlencoded"}).then(res => {
+                console.log(res);
+                if (res.body == 'no') {
+
+                }else {
+                    this.$router.push({name: 'ordergive', params: {ordernub:res.body,allprice:this.allprice}})
+                }
+            })
+        }
+    }
+    ,
+    created()
+    {
+        this.sbuy.user = sessionStorage.user;
+        this.$http.post('/api/product/getcarle', this.sbuy, {headers: "application/x-www-form-urlencoded"}).then(res => {
+            this.hrr = res.body;
+            this.hrr.forEach((val, ind) => {
+                val.img.split('--').forEach((val, ind) => {
+                    JSON.parse(val)
+                    if (ind == 0) {
+                        this.olol.push(JSON.parse(val).url)
+                    }
                 })
+            })
 //                console.log(1)
 //                this.hrr=res.body;
 //                this.hrr.forEach((val,ind)=>{
@@ -266,231 +283,270 @@
 //                        this.zarr.push(JSON.parse(val).url)
 //                    })
 //                })
-            })
-        }
+        })
+    }
     }
 </script>
 <style scoped lang="scss">
     /*相关推荐css开始*/
-    .cate-swiper{
+    .cate-swiper {
         width: 100%;
         height: 156px;
         .swiper-container {
             height: 100%;
-            a{
+            a {
                 display: block;
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
-                img{
+                img {
                     width: 100%;
                 }
             }
         }
     }
-    .xgtj{
-        .xgtjbanner{
-            height:300px;
-            width:100%;
+
+    .xgtj {
+        .xgtjbanner {
+            height: 300px;
+            width: 100%;
             box-sizing: border-box;
             padding-top: 70px;
             position: relative;
             overflow: hidden;
         }
-        height:400px;
-        width:100%;
+        height: 400px;
+        width: 100%;
         margin-bottom: 70px;
     }
+
     /*相关推荐css结束*/
-    button{
+    button {
         cursor: pointer;
     }
+
     .writeorder {
         width: 1200px;
         margin: 36px auto 160px;
     }
-    .writetop{
+
+    .writetop {
         height: 97px;
     }
+
     .writetop-l {
         float: left;
         margin-left: 7px;
     }
-    .writetop-l h4{
+
+    .writetop-l h4 {
         font-size: 16px;
     }
-    .writetop-l  h4 span.etxt{
+
+    .writetop-l h4 span.etxt {
         font-weight: normal;
     }
-    .writetop-l .zz span{
+
+    .writetop-l .zz span {
         display: block;
     }
-    .writetop-l .hx{
-          width: 58px;
-          height:3px;
-          background: #000;
+
+    .writetop-l .hx {
+        width: 58px;
+        height: 3px;
+        background: #000;
         float: left;
-      }
-    .writetop-l .yd{
-          width: 4px;
-          height:4px;
-          border-radius: 50%;
-          background: #000;
+    }
+
+    .writetop-l .yd {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #000;
         float: left;
         margin-left: 4px;
-      }
-    .writetop-r{
+    }
+
+    .writetop-r {
         float: right;
         margin-left: 7px;
         width: 345px;
-        height:50px;
+        height: 50px;
     }
+
     .writetop-r ul.num li.active {
         width: 26px;
-        height:26px;
+        height: 26px;
         border-radius: 50%;
         background: #ffff01;
         line-height: 26px;
         text-align: center;
     }
-    .writetop-r ul.num{
+
+    .writetop-r ul.num {
         display: flex;
         justify-content: space-around;
     }
-    .writetop-r ul.num li h1{
+
+    .writetop-r ul.num li h1 {
         font-size: 16px;
         font-weight: bold;
         font-style: italic;
     }
-    .writetop-r ul.num .hx{
+
+    .writetop-r ul.num .hx {
         width: 65px;
-        height:1px;
+        height: 1px;
         background: #c9c9c9;
         margin-top: 6px;
     }
-    .writetop-r ul.txt{
+
+    .writetop-r ul.txt {
         display: flex;
         justify-content: space-between;
     }
-    .writetop-r ul.txt li{
+
+    .writetop-r ul.txt li {
         color: #7b7b7b;
         font-size: 12px;
     }
-    .info{
+
+    .info {
         width: 876px;
         overflow: hidden;
         margin: 0 auto;
     }
-    .infopeo{
+
+    .infopeo {
         width: 279px;
-        height:44px;
+        height: 44px;
         border-radius: 30px;
         background: #333;
         position: relative;
     }
-    .infopeo .yd{
+
+    .infopeo .yd {
         position: absolute;
-        top:18px;
+        top: 18px;
         left: 22px;
         width: 9px;
         height: 9px;
         border-radius: 50%;
         background: #c1ff00;
     }
-    .infopeo span.txt{
+
+    .infopeo span.txt {
         margin-left: 44px;
     }
-    .infopeo span{
+
+    .infopeo span {
         color: #fff;
         line-height: 44px;
         font-size: 14px;
     }
-    .infotxt{
+
+    .infotxt {
         margin: 32px 0 44px;
     }
-    .infotxt li:nth-of-type(1){
+
+    .infotxt li:nth-of-type(1) {
         margin: 0;
     }
-    .infotxt li{
-        font-size:12px;
+
+    .infotxt li {
+        font-size: 12px;
         color: #676767;
         margin-top: 16px;
     }
-    .infotxt li span{
+
+    .infotxt li span {
         line-height: 14px;
     }
-    .infotxt button{
+
+    .infotxt button {
         width: 98px;
-        height:30px;
-        border:2px solid #000;
+        height: 30px;
+        border: 2px solid #000;
         border-radius: 30px;
         outline: none;
         background: #fff;
-        font-size:12px;
+        font-size: 12px;
         color: #676767;
         margin-top: 27px;
     }
-    .infotxt .addaddress{
+
+    .infotxt .addaddress {
         margin-right: 16px;
     }
-    .orderinfotop{
+
+    .orderinfotop {
         width: 876px;
-        height:44px;
+        height: 44px;
         border-radius: 30px;
         background: #333;
         position: relative;
         margin: 0 auto;
     }
-    .orderinfotop .yd{
+
+    .orderinfotop .yd {
         position: absolute;
-        top:18px;
+        top: 18px;
         left: 22px;
         width: 9px;
         height: 9px;
         border-radius: 50%;
         background: #c1ff00;
     }
-    .orderinfotop span.txt{
+
+    .orderinfotop span.txt {
         margin-left: 44px;
     }
-    .orderinfotop span{
+
+    .orderinfotop span {
         color: #fff;
         line-height: 44px;
         font-size: 14px;
     }
-    .orderlist li{
+
+    .orderlist li {
         width: 775px;
         height: 140px;
         margin: 0 auto;
         border-bottom: 1px solid #000;
     }
-    .orderlist li .thumb{
+
+    .orderlist li .thumb {
         float: left;
         margin-top: 35px;
     }
-    .orderlist li .proinfo{
+
+    .orderlist li .proinfo {
         margin: 40px 60px 0 10px;
         width: 130px;
-        height:68px;
+        height: 68px;
         float: left;
         font-size: 12px;
     }
-    .orderlist li .proinfo .ename{
+
+    .orderlist li .proinfo .ename {
         font-weight: bold;
     }
-    .orderlist li .proinfo .ename2{
+
+    .orderlist li .proinfo .ename2 {
         font-weight: normal;
         color: #676767;
     }
-    .orderlist li .proinfo .name{
+
+    .orderlist li .proinfo .name {
         font-weight: bold;
 
     }
-    .orderlist li .proinfo .procolor,.orderlist li .proinfo .cm{
+
+    .orderlist li .proinfo .procolor, .orderlist li .proinfo .cm {
         width: 40px;
-        height:24px;
+        height: 24px;
         box-sizing: border-box;
-        border:2px solid #bcbcbc;
+        border: 2px solid #bcbcbc;
         border-radius: 3px;
         text-align: center;
         line-height: 20px;
@@ -498,223 +554,264 @@
         color: #696969;
         margin-top: 12px;
     }
-    .orderlist li .proinfo .cm{
+
+    .orderlist li .proinfo .cm {
         margin-left: 4px;
     }
-    .orderlist li .price,.orderlist li .allprice{
+
+    .orderlist li .price, .orderlist li .allprice {
         font-size: 18px;
         font-weight: bold;
         float: left;
         line-height: 141px;
         margin-right: 100px;
     }
-    .orderlist li .num{
+
+    .orderlist li .num {
         float: left;
         line-height: 141px;
     }
-    .orderlist li .allprice{
+
+    .orderlist li .allprice {
         margin-left: 160px;
         margin-right: 0;
     }
-    .methodinfo{
+
+    .methodinfo {
         margin: 62px auto 0;
         width: 876px;
     }
-    .methodinfotop{
+
+    .methodinfotop {
         width: 278px;
-        height:44px;
+        height: 44px;
         border-radius: 30px;
         background: #333;
         position: relative;
     }
-    .methodinfotop .yd{
+
+    .methodinfotop .yd {
         position: absolute;
-        top:18px;
+        top: 18px;
         left: 22px;
         width: 9px;
         height: 9px;
         border-radius: 50%;
         background: #c1ff00;
     }
-    .methodinfotop span.txt{
+
+    .methodinfotop span.txt {
         margin-left: 44px;
     }
-    .methodinfotop span{
+
+    .methodinfotop span {
         color: #fff;
         line-height: 44px;
         font-size: 14px;
     }
-    .methodlist{
+
+    .methodlist {
         display: flex;
         justify-content: flex-start;
     }
-    .methodlist li{
+
+    .methodlist li {
         margin-top: 40px;
         width: 122px;
-        height:36px;
+        height: 36px;
         border-radius: 30px;
-        border:1px solid #000;
+        border: 1px solid #000;
         font-size: 12px;
         margin-left: 36px;
         box-sizing: border-box;
         position: relative;
     }
-    .methodlist li button{
+
+    .methodlist li button {
         border: none;
         outline: none;
         background: none;
         width: 100%;
-        height:100%;
+        height: 100%;
     }
-    .methodlist li.active{
+
+    .methodlist li.active {
         border-color: #c8f94e;
     }
-    .methodlist li .icon{
+
+    .methodlist li .icon {
         width: 30px;
-        height:30px;
+        height: 30px;
         border-radius: 50%;
         background: #000;
         position: absolute;
-        bottom:0;
-        left:4px;
+        bottom: 0;
+        left: 4px;
     }
-    .methodlist li .icon i{
-        font-size:20px;
+
+    .methodlist li .icon i {
+        font-size: 20px;
         color: #fff;
         text-align: center;
         margin-left: 0px;
         line-height: 30px;
     }
-    .methodlist li .txt{
-        margin: 0px 0 0  20px;
+
+    .methodlist li .txt {
+        margin: 0px 0 0 20px;
     }
-    .methodlist li .etxt{
+
+    .methodlist li .etxt {
         position: absolute;
-        top:22px;
-        left:20px;
+        top: 22px;
+        left: 20px;
         font-size: 5px;
         transform: scale(0.7);
         font-weight: bold;
     }
-    .distribution{
+
+    .distribution {
         width: 876px;
         margin: 70px auto 0;
     }
-    .distributiontop{
+
+    .distributiontop {
         width: 278px;
-        height:44px;
+        height: 44px;
         border-radius: 30px;
         background: #333;
         position: relative;
     }
-    .distributiontop .yd{
+
+    .distributiontop .yd {
         position: absolute;
-        top:18px;
+        top: 18px;
         left: 22px;
         width: 9px;
         height: 9px;
         border-radius: 50%;
         background: #c1ff00;
     }
-    .distributiontop span.txt{
+
+    .distributiontop span.txt {
         margin-left: 44px;
     }
-    .distributiontop span{
+
+    .distributiontop span {
         color: #fff;
         line-height: 44px;
         font-size: 14px;
     }
-    .defual{
+
+    .defual {
         margin: 30px 0 22px 40px;
     }
-    .defual i,.other i{
+
+    .defual i, .other i {
         float: left;
         font-size: 30px;
     }
-    .defual i{
-        font-size:35px;
+
+    .defual i {
+        font-size: 35px;
     }
-    .other i{
+
+    .other i {
         margin-left: 10px;
         margin-top: 10px;
     }
-    .defual .txt{
+
+    .defual .txt {
         margin: 7px 12px 0 8px;
-        font-size:12px;
+        font-size: 12px;
         color: #424141;
         float: left;
     }
-    .defual span{
+
+    .defual span {
         float: left;
         color: #bfbfbf;
         margin: 8px 0 0 0;
-        font-size:12px;
+        font-size: 12px;
     }
-    .other{
+
+    .other {
         clear: both;
         margin: 30px 0 22px 40px;
     }
-    .other .txt{
+
+    .other .txt {
         margin: 7px 12px 0 8px;
-        font-size:12px;
+        font-size: 12px;
         color: #424141;
         float: left;
         margin-left: 15px;
     }
-    .other span{
+
+    .other span {
         float: left;
         color: #bfbfbf;
         margin: 8px 0 0 0;
-        font-size:12px;
+        font-size: 12px;
     }
-    .other .change{
+
+    .other .change {
         width: 98px;
-        height:30px;
-        border:1px solid #000;
+        height: 30px;
+        border: 1px solid #000;
         border-radius: 30px;
         margin-left: 7px;
         margin-top: 5px;
         background: #fff;
         line-height: 10px;
     }
-    .other .change i{
+
+    .other .change i {
         margin-top: 2px;
-        font-size:18px;
+        font-size: 18px;
     }
-    .other .change span{
+
+    .other .change span {
         margin-top: 3px;
         margin-left: 2px;
         font-weight: bold;
         color: #000;
     }
-    .pay{
+
+    .pay {
         width: 876px;
         margin: 50px auto;
         overflow: hidden;
     }
-    .sett{
+
+    .sett {
         /*height:260px;*/
         margin-top: 30px;
         float: left;
     }
-    .sett .payable{
-        font-size:12px;
+
+    .sett .payable {
+        font-size: 12px;
         font-weight: bold;
     }
-    .sett .pealpayment{
+
+    .sett .pealpayment {
         font-weight: bold;
-        font-size:12px;
-    }
-    .sett .pealpayment span{
-        font-size:30px;
-        float: left;
-    }
-    .sett .pealpayment span.txt{
         font-size: 12px;
     }
-    .sett .pealpayment .rmb{
+
+    .sett .pealpayment span {
+        font-size: 30px;
+        float: left;
+    }
+
+    .sett .pealpayment span.txt {
+        font-size: 12px;
+    }
+
+    .sett .pealpayment .rmb {
         width: 46px;
-        height:26px;
+        height: 26px;
         border-radius: 30px;
         background: #000;
         text-align: center;
@@ -724,7 +821,8 @@
         font-weight: bold;
         float: left;
     }
-    button.go{
+
+    button.go {
         float: right;
         outline: none;
         border: none;

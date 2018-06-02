@@ -49,14 +49,17 @@
         </div>
         <div class="p2">
             <div class="yd"></div>
-            <span class="p2span1">订单编号： {{ordernumber}}</span>
+            <span class="p2span1">订单编号： {{ordernub}}</span>
         </div>
         <div class="p3">
-            <span class="p3span1">应付金额: 3487.00元</span>
+            <span class="p3span1">应付金额: {{allprice}}元</span>
             <span class="p3span2">支付方式: 在线方式</span>
             <span class="p3span2">配送方式: 默认快递</span>
         </div>
-        <img @click="toto" class="zhifu" src="../assets/img/dddf.png" alt="">
+        <router-link :to="'/orderok?ordernub='+ordernub">
+            <img class="zhifu" src="../assets/img/dddf.png" alt="">
+        </router-link>
+
         <!--相关推荐html开始-->
         <div class="xgtj">
             <div class="xgtjimg"><img src="../assets/img/hgjghjyutj.png" alt=""></div>
@@ -115,12 +118,12 @@
                     spaceBetween: 30,
                     freeMode: true
                 },
+                ordernub:0,
+                allprice:0
             }
         },
         methods:{
-            toto(){
-                this.$router.push({name:'orderok',params:{ordernumber:this.ordernumber}})
-            }
+
         },
         mounted(){
 //            相关推荐的数据
@@ -129,9 +132,9 @@
             })
         },
         created(){
-
             this.ordernumber=this.$route.params.on;
-
+            this.ordernub=this.$route.params.ordernub;
+            this.allprice=this.$route.params.allprice;
         }
     }
 </script>

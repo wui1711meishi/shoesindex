@@ -72,14 +72,11 @@
             }
         },
         mounted(){
-//            相关推荐的数据
-            this.$http.get('/api/product').then(res=>{
-                this.arr=res.body;
-            })
+
         },
 //        相关推荐的created
         created(){
-            this.ordernumber=this.$route.params.ordernumber;
+            this.ordernumber=this.$route.query.ordernub;
         }
     }
 </script>
