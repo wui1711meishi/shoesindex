@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-06-02 09:58:29
+-- Generation Time: 2018-06-02 14:22:17
 -- 服务器版本： 5.6.17
 -- PHP Version: 5.5.12
 
@@ -77,15 +77,7 @@ CREATE TABLE IF NOT EXISTS `car` (
   `size` int(3) DEFAULT NULL,
   `count` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=48 ;
-
---
--- 转存表中的数据 `car`
---
-
-INSERT INTO `car` (`id`, `uid`, `sid`, `color`, `size`, `count`) VALUES
-(46, 2, 49, 'pink', 41, 2),
-(47, 2, 50, 'red', 41, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -99,7 +91,16 @@ CREATE TABLE IF NOT EXISTS `ordernub` (
   `ordernub` int(100) NOT NULL,
   `address` varchar(2000) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+
+--
+-- 转存表中的数据 `ordernub`
+--
+
+INSERT INTO `ordernub` (`id`, `uid`, `ordernub`, `address`) VALUES
+(5, 1, 2147483647, '???  ???    ??????A?1002?     020004    ??    151-3562-5443'),
+(12, 1, 2147483647, '???  ???    ????A?1002?     020004    ??    151-3562-1434'),
+(13, 1, 2147483647, '???  ???    ??????A?1002?     020004    ??    151-3562-5443');
 
 -- --------------------------------------------------------
 
