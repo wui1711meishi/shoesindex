@@ -75,10 +75,7 @@
                 blacktoarr:[],
                 whitearr:[
                     {to:'/',left:'',name:'商品首页'},
-                    {to:'/productlist',left:'',name:'商品列表'},
-                    {to:'/my',left:'',name:'个人中心'},
-                    {to:'',left:'',name:'私人订制'},
-                    {to:'',left:'',name:'品牌介绍'},
+                    {to:'/productlist',left:'',name:'商品列表'}
                 ],
                 flagss:true,
                 user:""
@@ -90,10 +87,9 @@
             })
         },
         created(){
-
             if(sessionStorage.user){
                 this.user=sessionStorage.user;
-                this.flagss=false;
+                this.whitearr.push({to:'/my',left:'',name:'个人中心'});
             }else{
                 this.flagss=true;
             }

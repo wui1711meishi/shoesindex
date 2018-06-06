@@ -130,14 +130,6 @@
                 <div class="cate-swiper">
                     <template>
                         <swiper :options="swiperOption2">
-                            <!-- slides -->
-
-
-                            <!--<swiper-slide v-for="(item,ind) in botarr" v-if="ind>=2&&ind<=4" v-bind:key="ind">-->
-                                <!--<router-link to="">-->
-                                    <!--<img :src="JSON.parse(item.img.split('&#45;&#45;')[0]).url" alt="">-->
-                                <!--</router-link>-->
-                            <!--</swiper-slide>-->
                             <swiper-slide>
                                 <router-link to="">
                                     <img src="../assets/img/paihangbang-img2.png" alt="">
